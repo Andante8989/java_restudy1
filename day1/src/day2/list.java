@@ -1,6 +1,7 @@
 package day2;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class list {
 
@@ -63,7 +64,79 @@ public class list {
 		// "129"라는 항목이 성공적으로 삭제되고 true를 리턴한다
 		// 두 번째 remove(인덱스)의 경우는 해당 인덱스의 항목을 삭제하고 삭제된 항목을 리턴한다
 		System.out.println(pitches.remove(0));
-		// 첫번째 항
+		// 첫번째 항목인 133을 삭제한 후 "133"을 리턴한다
+		
+		
+		// 제네릭스
+		ArrayList<String> pitches2 = new ArrayList<String>();
+		// 하지만 보통 뒷 부분의 자료형은 굳이 적지 않아도 명확하기 때문에 다음의 표기법을 사용하는 것이 좋다
+		ArrayList<String> pitches3 = new ArrayList<>(); // 선호되는 방식
+		// 제네릭스가 도입되기 전인 J2SE 1.4 까지는 위의 코드를 다음과 같이사용했다
+		// ArrayList pitches = new ArrayList();
+		// 두 개 코드의 차이점은 ArrayList 라는 자료형 타입 바로 옆에 <String>과 같은 문구가 있느냐 없느냐의 차이이다.
+		// 즉, 제네릭스를 이용하면 좀 더 명확한 타입체크가 가능해 진다. 이것은 코드를 작성할 때도 몇가지 이득을 준다
+		// ArrayList pitches = new ArrayList();
+		// aList.add("138");
+		// aList.add("129");
+		// String one = (String) pitches.get(0);
+		// String two = (String) pitches.get(1);
+		// 위처럼 제네릭스를 사용하지 않을 경우에는 ArrayList 안에 추가되는 객체는 Object 자료형으로 인식된다
+		// Object 자료형은 모든 객체가 상속하고 있는 가장 기본적인 자료형이다. 
+		// 따라서 ArrayList 객체인 pitches에 값을 넣을 때는 문제가 안되지만 값을 가져올 경우에는 항상 Object 자료형에서
+		// Object 자료형에서 String 자료형으로 다음과 같이 형변환(casting)을 해 주어야만 한다
+		// String one = (String) piches.get(0); // Object 자료형을 String 자료형으로 캐스팅한다
+		
+		
+		// 또 한가지 주의할 점은 pitches 안에는 String 객체 이외의 객체도 넣을 수 있기 때문에 형 변환 과정에서 잘못된
+		// 형변환으로 인한 오류가 발생할 가능성이 있다는 점이다. 바로 이러한 점이 제네릭스의 탄생 이유이기도 하다
+		
+		// 위 코드를 제네릭스로 사용하여 변경하면 다음과 같이 된다.
+		// ArrayList<String> pitches = new ArrayList<>();
+		// aList.add("138");
+		// aList.add("129");
+		// String one = pitches.get(0);     // 형 변환이 필요없다.
+		// String two = pitches.get(1);     // 형 변환이 필요없다.
+		// 제네릭스로 자료형을 선언하기만 하면 그 이후로는 자료형에 대한 형변환 과정이 필요없다. 이미 컴파일러가 pitches에는
+		// 반드시 String 자료형만 추가 되어야 함을 알기 때문이다. 이렇게 제네릭스를 이용하면 형변환에 의한 불필요한 코딩과
+		// 잘못된 형변환에 의한 런타임 오류를 방지할 수 있다.
+		
+		// 다양한 방법으로 ArrayList 만들기
+		// 상단에 ArrayList 제네릭스를 사용하여 pitches를 생성한게 있다면 편하게 ArrayList를 생성할 수 있다.
+		
+		// ArrayList<String> pitches = new ArrayList<>(Arrays.asList("138", "129", "142"));
+		// System.out.println(pitches);
+		
+		// String.join
+		// 앞에서 "138","129","142" 의 요소를 이루어진 ArrayList를 만들어 보았다
+		// , 로 구분하여 다음과 같은 하나의 문자열로 만들 수 있지 않을까?
+		String result = "";
+		for (int i = 0; i < pitches.size(); i++) {
+			result += pitches.get(i);
+			result += ","; // 콤마를 추가한다
+		}
+		result = result.substring(0, result.length() - 1); // 마지막 콤마는 제거한다
+		System.out.println(result);  // 138, 129, 142 출력
+		
+		// 위 예는 pitches를 갯수만큼 루프를 돌면서 뒤에 콤마를 더하고 최종적으로 마지막 콤마를 제거하는 방법이다.
+		// 위 예에서도 볼 수 있듯이 리스트의 각각의 요소 사이에 구분자를 끼워넣어 하나의 문자열로 만드는 것은 꽤 까다로운 일이다
+		// 하지만 string.join을 사용하면 다음처럼 간단하게 처리할 수 있다
+	    result = String.join(",", pitches);
+	    System.out.println(result);  // 138, 129, 142
+	    
+		// 리스트 정렬하기
+	    // 순서대로 정렬하기 위해서는 다음처럼 리스트의 sort 메소드를 사용해야한다
+	    
+	    pitches.sort(Comparator.naturalOrder()); // 오름차순 정렬
+	    System.out.println(pitches); // [129, 138, 142] 출력
+	    
+	    // sort 메소드에는 정렬기준을 파라미터로 전달해야 한다. 정렬기준에는 다음처럼 오름차순, 내림차순이 있다
+	    // 오름차순(순방향) 정렬 - Comparator.naturalOrder()
+	    // 내림차순(역방향) 정렬 - Comparator.reverseOrder()
+	    
+	    
+		
+		
+		
 		
 
 	}
